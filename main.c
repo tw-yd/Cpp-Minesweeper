@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <conio.h>
 
 #define NOTSEE 35
 #define BUMB 37
@@ -10,23 +11,27 @@ char Map_Watch[50][50] = {0};
 
 void build(int,int,int);
 void draw(int,int);
-void user(int,int);
+void enter();
+void show(int,int);
+
+int Choose_X = 0;
+int Choose_Y = 0;
+int Choose = 0;
 
 int main()
 {
     int x = 10;
     int y = 10;
-    int t = 5;
+    int t = 10;
 
     int seed = time(0);
     srand(seed);
     build(y, x, t);
     for(int i=0;;i++){
-        printf("map size:%d*%d, number of bombs:%d, map seed:%d\n", x, y, t, seed);
+        printf("Minesweeper\nsize:%d*%d, bombs:%d, seed:%d\n\n", x, y, t, seed);
         draw(y,x);
-        user(y,x);
-        //
-        sleep(1);
+        enter(y,x);
+        show(y,x);
         system("cls");
     }
 }
@@ -70,7 +75,8 @@ void draw(int y, int x)
         printf("-\n");
         for(int j=0; j<x; j++){
             // Map_Watch[i][j]==1
-            if(Map_Watch[i][j]==1) printf("| %c ", Map_Value[i][j]);
+            if(Map_Value[i][j]==2) printf("| @ ");
+            else if(Map_Watch[i][j]==1) printf("| %c ", Map_Value[i][j]);
             else printf("| %c ", NOTSEE);
         }
         printf("|\n");
@@ -78,19 +84,37 @@ void draw(int y, int x)
     for(int j=0; j<x; j++){
         printf("----");
     }
-    printf("-\n");
+    printf("-\n\n");
 }
 
-void user(int h, int w)
+void enter()
 {
-    int x, y;
-    scanf("%d,%d", &y, &x);
-    Map_Watch[x][y] = 1;
-    printf("%d,%d", y, x);
+    int x=0;
+    int y=0;
 
+    printf("Enter coordinates(x,y):%d,%d", Choose_X, Choose_Y);
+
+    char input;
+    Map_Value[Choose_Y][Choose_X] = Choose;
+
+    input = getch();
+    if (input == 'W' || input == 'w') Choose_Y--;
+    if (input == 'A' || input == 'a') Choose_X--;
+    if (input == 'S' || input == 's') Choose_Y++;
+    if (input == 'D' || input == 'd') Choose_X++;
+    if (input == ' ' || input == ' ') Map_Watch[Choose_Y][Choose_X] = 1;
+
+    Choose = Map_Value[Choose_Y][Choose_X];
+    Map_Value[Choose_Y][Choose_X] = 2;
+
+    printf("%d%d\n", x, y);
+}
+
+void show(int h, int w)
+{
     for(int i=0; i<h; i++){
         for(int j=0; j<w; j++){
-            //上下左右判定  i-1||i+1||j-1||j+1
+            //上下左右判定
             short run = 0;
             if(0<i-1 && Map_Watch[i-1][j]==1 && Map_Watch[i][j]!=1 && Map_Value[i-1][j]==32) run = 1;
             if(h>i+1 && Map_Watch[i+1][j]==1 && Map_Watch[i][j]!=1 && Map_Value[i+1][j]==32) run = 1;
