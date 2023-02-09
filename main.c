@@ -18,47 +18,52 @@ int Choose_X = 0;
 int Choose_Y = 0;
 int Choose = 0;
 
-int main()
+void main()
 {
-    int x = 10;
-    int y = 10;
-    int t = 10;
+    while(1){
+        int i, x, y, t;
 
-    printf("please choose mode:\
-            \n1.Simple\
-            \n2.generally\
-            \n3.hard\n");
+        printf("please choose mode:\
+                \n1.Simple\
+                \n2.Generally\
+                \n3.Hard\
+                \n4.End\
+                \n\nEnter choose number:");
+        scanf("%d", &i);
+        switch(i){
+            case 1:
+                x = 5;
+                y = 5;
+                t = 1;
+                break;
+            case 2:
+                x = 10;
+                y = 10;
+                t = 10;
+                break;
+            case 3:
+                x = 20;
+                y = 20;
+                t = 50;
+                break;
+            case 4:
+                printf("Thank you for playing");
+                return 0;
+            default:
+                system("cls");
+                continue;
+        }
 
-    int i;
-    scanf("%d", &i);
-    switch(i){
-        case 1:
-            x = 5;
-            y = 5;
-            t = 1;
-            break;
-        case 2:
-            x = 10;
-            y = 10;
-            t = 10;
-            break;
-        case 3:
-            x = 20;
-            y = 20;
-            t = 50;
-            break;
-        default:
-            return 0;
-    }
-    int seed = time(0);
-    srand(seed);
-    build(y, x, t);
-    for(int i=0;;i++){
-        printf("Minesweeper\nsize:%d*%d, bombs:%d, seed:%d\n\n", x, y, t, seed);
-        draw(y,x);
-        enter(y,x);
-        show(y,x);
-        system("cls");
+        int seed = time(0);
+        srand(seed);
+        build(y, x, t);
+        for(int i=0;;i++){
+            printf("Minesweeper\nsize:%d*%d, bombs:%d, seed:%d\n\n", x, y, t, seed);
+            draw(y,x);
+            enter(y,x);
+            show(y,x);
+            system("cls");
+        }
     }
 }
 
