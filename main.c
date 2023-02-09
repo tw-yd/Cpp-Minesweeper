@@ -24,6 +24,32 @@ int main()
     int y = 10;
     int t = 10;
 
+    printf("please choose mode:\
+            \n1.Simple\
+            \n2.generally\
+            \n3.hard\n");
+
+    int i;
+    scanf("%d", &i);
+    switch(i){
+        case 1:
+            x = 5;
+            y = 5;
+            t = 1;
+            break;
+        case 2:
+            x = 10;
+            y = 10;
+            t = 10;
+            break;
+        case 3:
+            x = 20;
+            y = 20;
+            t = 50;
+            break;
+        default:
+            return 0;
+    }
     int seed = time(0);
     srand(seed);
     build(y, x, t);
@@ -116,15 +142,14 @@ void show(int h, int w)
         for(int j=0; j<w; j++){
             //上下左右判定
             short run = 0;
-            if(0<i-1 && Map_Watch[i-1][j]==1 && Map_Watch[i][j]!=1 && Map_Value[i-1][j]==32) run = 1;
-            if(h>i+1 && Map_Watch[i+1][j]==1 && Map_Watch[i][j]!=1 && Map_Value[i+1][j]==32) run = 1;
-            if(0<j-1 && Map_Watch[i][j-1]==1 && Map_Watch[i][j]!=1 && Map_Value[i][j-1]==32) run = 1;
-            if(w>j+1 && Map_Watch[i][j+1]==1 && Map_Watch[i][j]!=1 && Map_Value[i][j+1]==32) run = 1;
+            if(0<i-1 && Map_Watch[i-1][j]==1 && Map_Value[i-1][j]==32) run = 1;
+            if(h>i+1 && Map_Watch[i+1][j]==1 && Map_Value[i+1][j]==32) run = 1;
+            if(0<j-1 && Map_Watch[i][j-1]==1 && Map_Value[i][j-1]==32) run = 1;
+            if(w>j+1 && Map_Watch[i][j+1]==1 && Map_Value[i][j+1]==32) run = 1;
 
-            if(run){
+            if(Map_Watch[i][j]!=1 && run){
                 Map_Watch[i][j] = 1;
-                i=0;
-                j=0;
+                i=0, j=0;
             }
         }
     }
