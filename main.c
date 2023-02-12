@@ -27,26 +27,27 @@ void main()
                 \n1.Simple\
                 \n2.Generally\
                 \n3.Hard\
-                \n4.End\
+                \n4.Custom\
+                \n5.End\
                 \n\nEnter choose number:");
         scanf("%d", &i);
         switch(i){
             case 1:
-                x = 5;
-                y = 5;
-                t = 1;
+                x = 5, y = 5, t = 1;
                 break;
             case 2:
-                x = 10;
-                y = 10;
-                t = 10;
+                x = 10, y = 10, t = 10;
                 break;
             case 3:
-                x = 20;
-                y = 20;
-                t = 50;
+                x = 20, y = 20, t = 50;
                 break;
             case 4:
+                printf("chose size(x,y)");
+                scanf("%d,%d", &x, &y);
+                printf("chose number of bombs(1~%d)", x*y);
+                scanf("%d,%d", &t);
+                break;
+            case 5:
                 printf("Thank you for playing");
                 return 0;
             default:
@@ -69,22 +70,22 @@ void main()
 
 void build(int y,int x, int t)
 {
-    //ä¾ç¯„åœéæ­·æˆç©ºç™½
+    //¨Ì½d³ò¹M¾ú¦¨ªÅ¥Õ
     for(int i=0; i<y; i++){
         for(int j=0; j<x; j++){
             Map_Value[i][j] = 32;
         }
     }
-    //ç”Ÿæˆç‚¸å½ˆèˆ‡å‘¨åœæ•¸å€¼
+    //¥Í¦¨¬µ¼u»P©P³ò¼Æ­È
     for(int i=0; i<t; i++){
         int a, b;
-        //ç”Ÿæˆç‚¸å½ˆç›´åˆ°ä¸é‡è¤‡
+        //¥Í¦¨¬µ¼uª½¨ì¤£­«½Æ
         while(1){
             a = rand()%y;
             b = rand()%x;
             if(Map_Value[a][b] != BUMB) break;
         }
-        //ç”Ÿæˆå‘¨åœæ•¸å€¼
+        //¥Í¦¨©P³ò¼Æ­È
         for(int j=-1; j<2; j++){
             for(int k=-1; k<2; k++){
                 if((b-k!=-1||x)&&(Map_Value[a-j][b-k] != BUMB)){
@@ -145,7 +146,7 @@ void show(int h, int w)
 {
     for(int i=0; i<h; i++){
         for(int j=0; j<w; j++){
-            //ä¸Šä¸‹å·¦å³åˆ¤å®š
+            //¤W¤U¥ª¥k§P©w
             short run = 0;
             if(0<i-1 && Map_Watch[i-1][j]==1 && Map_Value[i-1][j]==32) run = 1;
             if(h>i+1 && Map_Watch[i+1][j]==1 && Map_Value[i+1][j]==32) run = 1;
