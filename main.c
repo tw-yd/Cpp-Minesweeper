@@ -1,35 +1,33 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <conio.h>
+#include <windows.h>
+#include <ctype.h>
 
 #define NOTSEE 35
 #define BUMB 37
 
-char Map_Value[50][50] = {0};
-char Map_Watch[50][50] = {0};
+inline int print(char [], int, int, int);
 
-void build(int,int,int);
-void draw(int,int);
-void enter();
-void show(int,int);
+void build(int [50][50], int,int,int);
+void draw(int [50][50], int,int);
 
-int Choose_X = 0;
-int Choose_Y = 0;
-int Choose = 0;
-
-void main()
+int main()
 {
+    char Map_Value[50][50] = {0};
+    char Map_Watch[50][50] = {0};
+
     while(1){
         int i, x, y, t;
+        int seed = time(0);
+        srand(seed);
 
-        printf("please choose mode:\
-                \n1.Simple\
-                \n2.Generally\
-                \n3.Hard\
-                \n4.Custom\
-                \n5.End\
-                \n\nEnter choose number:");
+        print("please choose mode:\n", -1, -1, -1);
+        print("1.simple\n", -1, -1, 14);
+        print("2.generally\n", -1, -1, -1);
+        print("3.hard\n", -1, -1, -1);
+        print("4.custom\n", -1, -1, -1);
+        print("5.end\n", -1, -1, -1);
+        print("Enter choose number:", -1, -1, 7);
+
         scanf("%d", &i);
         switch(i){
             case 1:
@@ -42,38 +40,73 @@ void main()
                 x = 20, y = 20, t = 50;
                 break;
             case 4:
-                printf("chose size(x,y)");
-                scanf("%d,%d", &x, &y);
-                printf("chose number of bombs(1~%d)", x*y);
-                scanf("%d,%d", &t);
+                while(1){
+                    print("chose size (x,y):", -1, -1, 7);
+                    scanf("%d,%d", &x, &y);
+                    if(x<51 && y<51) break;
+                }
+                while(1){
+                    printf("chose number of bombs(1~%d):", x*y);
+                    scanf("%d,%d", &t);
+                    if(t<x*y) break;
+                }
+                while(1){
+                    printf("enter seed:");
+                    scanf("%d", &seed);
+                    if(seed<2147483648) break;
+                }
                 break;
             case 5:
-                printf("Thank you for playing");
+                system("cls");
+                print("Thank you for playing", -1, -1, 7);
                 return 0;
             default:
                 system("cls");
                 continue;
         }
 
-        int seed = time(0);
-        srand(seed);
-        build(y, x, t);
+        system("cls");
+        printf("Minesweeper\nsize:%d*%d, bombs:%d, seed:%d\n\n", x, y, t, seed);
+        build(Map_Value, y, x, t);
+        draw(Map_Value, y, x);
+
+        int Choose_X = 0, Choose_Y = 0;
         for(int i=0;;i++){
-            printf("Minesweeper\nsize:%d*%d, bombs:%d, seed:%d\n\n", x, y, t, seed);
-            draw(y,x);
-            enter(y,x);
-            show(y,x);
-            system("cls");
+            printf("Enter coordinates(x,y):%d,%d\n", Choose_X, Choose_Y);
+            char input = getch();
+
+            if (toupper(input)=='W' && 0<Choose_Y) Choose_Y--;
+            if (toupper(input)=='A' && 0<Choose_X) Choose_X--;
+            if (toupper(input)=='S' && Choose_Y<y-1) Choose_Y++;
+            if (toupper(input)=='D' && Choose_X<y-1) Choose_X++;
+            if (input == ' ') ;
+
+            print("@", Choose_X*4+2, Choose_Y*2+4, 10);
+            print("", 0, 2*y+4,  7);
         }
     }
 }
 
-void build(int y,int x, int t)
+int print(char s[], int x, int y, int c)
+{
+    if(x!=-1&&y!=-1){
+        COORD a;
+        a.X=x;
+        a.Y=y;
+        SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),a);
+    }
+    if(c!=-1){
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),c);
+    }
+    printf("%s", s);
+}
+
+void build(int Map_Value[50][50], int y,int x, int t)
 {
     //依範圍遍歷成空白
     for(int i=0; i<y; i++){
         for(int j=0; j<x; j++){
-            Map_Value[i][j] = 32;
+            //Map_Value[i][j] = 32;
         }
     }
     //生成炸彈與周圍數值
@@ -98,65 +131,20 @@ void build(int y,int x, int t)
     }
 }
 
-void draw(int y, int x)
+void draw(int Map_Value[50][50], int y, int x)
 {
     for(int i=0; i<y; i++){
-        for(int j=0; j<x; j++){
-            printf("----");
+        for(int j=0; j<4*x+1; j++){
+            printf("-");
         }
-        printf("-\n");
+        printf("\n");
         for(int j=0; j<x; j++){
-            // Map_Watch[i][j]==1
-            if(Map_Value[i][j]==2) printf("| @ ");
-            else if(Map_Watch[i][j]==1) printf("| %c ", Map_Value[i][j]);
-            else printf("| %c ", NOTSEE);
+            printf("|   ");
         }
         printf("|\n");
     }
-    for(int j=0; j<x; j++){
-        printf("----");
+    for(int j=0; j<4*x+1; j++){
+        printf("-");
     }
-    printf("-\n\n");
-}
-
-void enter()
-{
-    int x=0;
-    int y=0;
-
-    printf("Enter coordinates(x,y):%d,%d", Choose_X, Choose_Y);
-
-    char input;
-    Map_Value[Choose_Y][Choose_X] = Choose;
-
-    input = getch();
-    if (input == 'W' || input == 'w') Choose_Y--;
-    if (input == 'A' || input == 'a') Choose_X--;
-    if (input == 'S' || input == 's') Choose_Y++;
-    if (input == 'D' || input == 'd') Choose_X++;
-    if (input == ' ' || input == ' ') Map_Watch[Choose_Y][Choose_X] = 1;
-
-    Choose = Map_Value[Choose_Y][Choose_X];
-    Map_Value[Choose_Y][Choose_X] = 2;
-
-    printf("%d%d\n", x, y);
-}
-
-void show(int h, int w)
-{
-    for(int i=0; i<h; i++){
-        for(int j=0; j<w; j++){
-            //上下左右判定
-            short run = 0;
-            if(0<i-1 && Map_Watch[i-1][j]==1 && Map_Value[i-1][j]==32) run = 1;
-            if(h>i+1 && Map_Watch[i+1][j]==1 && Map_Value[i+1][j]==32) run = 1;
-            if(0<j-1 && Map_Watch[i][j-1]==1 && Map_Value[i][j-1]==32) run = 1;
-            if(w>j+1 && Map_Watch[i][j+1]==1 && Map_Value[i][j+1]==32) run = 1;
-
-            if(Map_Watch[i][j]!=1 && run){
-                Map_Watch[i][j] = 1;
-                i=0, j=0;
-            }
-        }
-    }
+    printf("\n");
 }
