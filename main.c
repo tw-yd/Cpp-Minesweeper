@@ -1,14 +1,8 @@
 #include <stdio.h>
 #include <windows.h>
-#include <ctype.h>
 
 #define NOTSEE 35
 #define BUMB 37
-
-inline int print(char [], int, int, int);
-
-void build(int [50][50], int,int,int);
-void draw(int [50][50], int,int);
 
 int main()
 {
